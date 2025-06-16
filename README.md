@@ -1,4 +1,10 @@
-# bubuy
+# Kelompok 4 Bubuy Aps
+> [!NOTE]
+Informatika B 2022 <br/>
+Nama `(22060)` <br/>
+Nama `(2206)` <br/>
+ `(22060)`
+>
 
 A new Flutter project.
 
