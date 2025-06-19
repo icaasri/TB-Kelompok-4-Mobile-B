@@ -9,13 +9,8 @@ Ini adalah project tugas besar matakuliah praktikum pemrograman mobile yang bert
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+catatan program : 
+- login screen & register screen masih berdiri sendiri (masih berupa formalitas saja)
+- logo belum bisa muncul 
+- data masih statis
+- fitur lupa password masih pajangan 
