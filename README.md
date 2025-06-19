@@ -1,12 +1,11 @@
 # Kelompok 4 Bubuy Aps
 > [!NOTE]
-Informatika B 2022 <br/>
-Nama `(22060)` <br/>
-Nama `(2206)` <br/>
- `(22060)`
+Informatika B 2025 <br/>
+R Muhammad arya Fajar Sastradipraja `(22066)` <br/>
+<br/>
 >
 
-A new Flutter project.
+Ini adalah project tugas besar matakuliah praktikum pemrograman mobile yang bertemakan aplikasi berita
 
 ## Getting Started
 
