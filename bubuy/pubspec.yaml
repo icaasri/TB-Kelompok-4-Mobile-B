@@ -1,7 +1,8 @@
+# pubspec.yaml
 name: bubuy_lovers
 description: Aplikasi berita hewan Bubuy Lovers
 
-publish_to: 'none' # Remove this line if you intend to publish your package
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -12,6 +13,9 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  provider: ^6.0.5          # Untuk state management
+  shared_preferences: ^2.2.3 # Untuk menyimpan data lokal
+  image_picker: ^1.1.2      # Untuk memilih gambar dari galeri/kamera
 
 dev_dependencies:
   flutter_test:
@@ -21,6 +25,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # Assets configuration - pastikan logo bubuy.png ter-load
   assets:
-    - assets/images/ # This line includes all files in the assets/images/ directory
+    - assets/images/ # Pastikan folder ini ada dan berisi bubuy.png

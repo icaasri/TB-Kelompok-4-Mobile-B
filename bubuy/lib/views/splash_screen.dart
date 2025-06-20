@@ -1,6 +1,7 @@
+// views/splash_screen.dart
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'login_screen.dart';
+// import 'login_screen.dart'; // Tidak perlu import langsung jika pakai named route
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -14,32 +15,27 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
+      Navigator.pushReplacementNamed(context, '/login'); // Gunakan named route
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1565C0), // Warna biru tua seperti login
+      backgroundColor: const Color(0xFF1565C0),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo
             SizedBox(
               width: 200,
               height: 200,
               child: Image.asset(
-                'assets/bubuy.png', // Pastikan path ini sesuai (tanpa /images jika tidak ada folder itu)
+                'assets/images/bubuy.png', // Pastikan path ini sesuai
                 fit: BoxFit.contain,
               ),
             ),
             const SizedBox(height: 20),
-            // Text atau Loading
             const CircularProgressIndicator(
               color: Colors.white,
             ),
