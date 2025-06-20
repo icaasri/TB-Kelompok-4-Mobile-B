@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
+import 'main_navigation.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -39,18 +40,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Logo Section
                   Container(
                     margin: const EdgeInsets.only(bottom: 50),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          child: Image.asset(
-                            'assets/bubuy.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                      ],
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white.withOpacity(0.1),
+                      ),
+                      child: const Icon(
+                        Icons.pets,
+                        size: 60,
+                        color: Colors.orange,
+                      ),
                     ),
                   ),
 
@@ -61,7 +62,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _usernameController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.person, color: Colors.white70),
+                        prefixIcon:
+                            const Icon(Icons.person, color: Colors.white70),
                         hintText: 'USERNAME',
                         hintStyle: const TextStyle(color: Colors.white70),
                         filled: true,
@@ -96,10 +98,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: !_isPasswordVisible,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                        prefixIcon:
+                            const Icon(Icons.lock, color: Colors.white70),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: Colors.white70,
                           ),
                           onPressed: () {
@@ -140,7 +145,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Fitur lupa password belum tersedia')),
+                          const SnackBar(
+                              content:
+                                  Text('Fitur lupa password belum tersedia')),
                         );
                       },
                       child: const Text(
@@ -162,9 +169,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          // Navigasi ke MainNavigation
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => const MainNavigation()),
+                            MaterialPageRoute(
+                              builder: (context) => const MainNavigation(),
+                            ),
                           );
                         }
                       },
@@ -201,7 +211,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => const RegisterScreen(),
+                            ),
                           );
                         },
                         child: const Text(
@@ -228,25 +240,5 @@ class _LoginScreenState extends State<LoginScreen> {
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-}
-
-class MainNavigation extends StatelessWidget {
-  const MainNavigation({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Main Navigation'),
-        backgroundColor: const Color(0xFF1565C0),
-      ),
-      body: const Center(
-        child: Text(
-          'Selamat datang!',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-    );
   }
 }

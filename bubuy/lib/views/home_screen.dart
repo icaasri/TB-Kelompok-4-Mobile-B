@@ -12,16 +12,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All';
   final TextEditingController _searchController = TextEditingController();
-  
-  final List<String> categories = ['All', 'Bird', 'Cat', 'Fish', 'Dog', 'Rabbit'];
-  
+
+  final List<String> categories = [
+    'All',
+    'Bird',
+    'Cat',
+    'Fish',
+    'Dog',
+    'Rabbit',
+  ];
+
   final List<Article> articles = [
     Article(
       id: '1',
       title: 'Sejarah burung pipit',
       category: 'Bird',
-      imageUrl: '/placeholder.svg?height=100&width=150',
-      content: 'Burung pipit adalah salah satu burung kecil yang paling umum ditemukan di seluruh dunia. Mereka memiliki kemampuan adaptasi yang luar biasa.',
+      imageUrl:
+          'https://via.placeholder.com/150x100?text=Bird+Image', // Example placeholder URL
+      content:
+          'Burung pipit adalah salah satu burung kecil yang paling umum ditemukan di seluruh dunia. Mereka memiliki kemampuan adaptasi yang luar biasa.',
       author: 'Admin',
       createdAt: DateTime.now().subtract(const Duration(hours: 2)),
     ),
@@ -29,8 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
       id: '2',
       title: 'Cara merawat kucing',
       category: 'Cat',
-      imageUrl: '/placeholder.svg?height=100&width=150',
-      content: 'Kucing adalah hewan peliharaan yang membutuhkan perawatan khusus. Mereka memerlukan makanan berkualitas dan lingkungan yang bersih.',
+      imageUrl:
+          'https://via.placeholder.com/150x100?text=Cat+Image', // Example placeholder URL
+      content:
+          'Kucing adalah hewan peliharaan yang membutuhkan perawatan khusus. Mereka memerlukan makanan berkualitas dan lingkungan yang bersih.',
       author: 'Dr. Hewan',
       createdAt: DateTime.now().subtract(const Duration(hours: 5)),
     ),
@@ -38,26 +49,50 @@ class _HomeScreenState extends State<HomeScreen> {
       id: '3',
       title: 'Ikan hias air tawar',
       category: 'Fish',
-      imageUrl: '/placeholder.svg?height=100&width=150',
-      content: 'Ikan hias air tawar menjadi pilihan populer untuk aquarium rumah karena perawatannya yang relatif mudah.',
+      imageUrl:
+          'https://via.placeholder.com/150x100?text=Fish+Image', // Example placeholder URL
+      content:
+          'Ikan hias air tawar menjadi pilihan populer untuk aquarium rumah karena perawatannya yang relatif mudah.',
       author: 'Aquarist',
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
     ),
   ];
 
   List<Article> get filteredArticles {
-    List<Article> filtered = selectedCategory == 'All' 
-        ? articles 
-        : articles.where((article) => article.category == selectedCategory).toList();
-    
+    List<Article> filtered = selectedCategory == 'All'
+        ? articles
+        : articles
+            .where((article) => article.category == selectedCategory)
+            .toList();
+
     if (_searchController.text.isNotEmpty) {
-      filtered = filtered.where((article) => 
-        article.title.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-        article.content.toLowerCase().contains(_searchController.text.toLowerCase())
-      ).toList();
+      filtered = filtered
+          .where(
+            (article) =>
+                article.title.toLowerCase().contains(
+                      _searchController.text.toLowerCase(),
+                    ) ||
+                article.content.toLowerCase().contains(
+                      _searchController.text.toLowerCase(),
+                    ),
+          )
+          .toList();
     }
-    
+
     return filtered;
+  }
+
+  String _formatTimeAgo(DateTime dateTime) {
+    final Duration diff = DateTime.now().difference(dateTime);
+    if (diff.inDays > 0) {
+      return '${diff.inDays}d ago';
+    } else if (diff.inHours > 0) {
+      return '${diff.inHours}h ago';
+    } else if (diff.inMinutes > 0) {
+      return '${diff.inMinutes}m ago';
+    } else {
+      return 'just now';
+    }
   }
 
   @override
@@ -102,13 +137,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 8),
                   const Text(
                     'Explore the Animals',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Search Bar
                   Container(
                     decoration: BoxDecoration(
@@ -129,14 +161,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         hintText: 'Search news animals',
                         prefixIcon: Icon(Icons.search, color: Colors.grey),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            
+
             // Popular Animals Section
             Container(
               padding: const EdgeInsets.all(20),
@@ -152,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Category Tabs
                   SizedBox(
                     height: 40,
@@ -162,22 +197,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         final category = categories[index];
                         final isSelected = selectedCategory == category;
-                        
+
                         return GestureDetector(
-                          onTap: () => setState(() => selectedCategory = category),
+                          onTap: () =>
+                              setState(() => selectedCategory = category),
                           child: Container(
                             margin: const EdgeInsets.only(right: 12),
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF1565C0) : Colors.grey[200],
+                              color: isSelected
+                                  ? const Color(0xFF1565C0)
+                                  : Colors.grey[200],
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Center(
                               child: Text(
                                 category,
                                 style: TextStyle(
-                                  color: isSelected ? Colors.white : Colors.grey[600],
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.grey[600],
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
                                 ),
                               ),
                             ),
@@ -189,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            
+
             // Articles List
             Expanded(
               child: ListView.builder(
@@ -202,7 +247,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ArticleDetailScreen(article: article),
+                          builder: (context) =>
+                              ArticleDetailScreen(article: article),
                         ),
                       );
                     },
@@ -231,10 +277,24 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 100,
                               height: 100,
                               color: Colors.grey[300],
-                              child: const Icon(Icons.image, color: Colors.grey),
+                              child: article.imageUrl.isNotEmpty
+                                  ? Image.network(
+                                      article.imageUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(
+                                        Icons.image,
+                                        color: Colors.grey,
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.image,
+                                      color: Colors.grey,
+                                    ),
                             ),
                           ),
-                          
+
                           // Article Content
                           Expanded(
                             child: Padding(
@@ -266,10 +326,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Row(
                                     children: [
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 2,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF1565C0).withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(10),
+                                          color: const Color(
+                                            0xFF1565C0,
+                                          ).withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
                                         child: Text(
                                           article.category,
@@ -282,7 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       const Spacer(),
                                       Text(
-                                        '${article.createdAt.difference(DateTime.now()).inHours.abs()}h ago',
+                                        _formatTimeAgo(article.createdAt),
                                         style: TextStyle(
                                           fontSize: 10,
                                           color: Colors.grey[500],

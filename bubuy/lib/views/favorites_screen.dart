@@ -15,7 +15,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       title: 'Sejarah burung pipit',
       category: 'Bird',
       imageUrl: '/placeholder.svg?height=100&width=150',
-      content: 'Burung pipit adalah salah satu burung kecil yang paling umum ditemukan...',
+      content:
+          'Burung pipit adalah salah satu burung kecil yang paling umum ditemukan...',
       author: 'Admin',
       createdAt: DateTime.now().subtract(const Duration(hours: 2)),
       isFavorite: true,

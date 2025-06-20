@@ -30,7 +30,7 @@ class LogoutScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       // Logo burung asli
-                      Container(
+                      SizedBox(
                         width: 150,
                         height: 150,
                         child: Image.asset(
@@ -68,7 +68,8 @@ class LogoutScreen extends StatelessWidget {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text('Konfirmasi Logout'),
-                            content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+                            content: const Text(
+                                'Apakah Anda yakin ingin keluar dari aplikasi?'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -81,7 +82,9 @@ class LogoutScreen extends StatelessWidget {
                                   Navigator.of(context).pop();
                                   Navigator.pushAndRemoveUntil(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen()),
                                     (route) => false,
                                   );
                                 },

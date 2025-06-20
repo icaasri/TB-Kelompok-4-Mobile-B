@@ -23,17 +23,28 @@ class ArticleDetailScreen extends StatelessWidget {
               width: double.infinity,
               height: 200,
               color: Colors.grey[300],
-              child: const Icon(Icons.image, size: 50, color: Colors.grey),
+              child: article.imageUrl.isNotEmpty
+                  ? Image.asset(
+                      article.imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.image, size: 50, color: Colors.grey),
+                    )
+                  : const Icon(Icons.image, size: 50, color: Colors.grey),
             ),
-            
+
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Category Badge
+                  //nikib gnay ayra
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFF1565C0).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(15),
@@ -47,9 +58,9 @@ class ArticleDetailScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Title
                   Text(
                     article.title,
@@ -59,32 +70,26 @@ class ArticleDetailScreen extends StatelessWidget {
                       color: Colors.black87,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 12),
-                  
+
                   // Author and Date
                   Row(
                     children: [
                       Text(
                         'By ${article.author}',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
                       ),
                       const Spacer(),
                       Text(
                         '${article.createdAt.day}/${article.createdAt.month}/${article.createdAt.year}',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // Content
                   Text(
                     article.content,

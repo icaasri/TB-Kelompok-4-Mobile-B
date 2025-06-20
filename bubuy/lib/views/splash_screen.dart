@@ -13,70 +13,41 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToLogin();
-  }
-
-  _navigateToLogin() async {
-    await Future.delayed(const Duration(seconds: 3));
-    if (mounted) {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF1565C0), // Warna biru tua seperti login
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo Container
-            Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.grey[800],
-              ),
-              child: const Icon(
-                Icons.pets,
-                size: 100,
-                color: Colors.orange,
+            // Logo
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Image.asset(
+                'assets/bubuy.png', // Pastikan path ini sesuai (tanpa /images jika tidak ada folder itu)
+                fit: BoxFit.contain,
               ),
             ),
-            const SizedBox(height: 30),
-            
-            // App Title
-            const Text(
-              'BUBUY LOVERS',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 2,
-              ),
-            ),
-            const SizedBox(height: 10),
-            
-            // Subtitle
-            const Text(
-              'Animal News App',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white70,
-                letterSpacing: 1,
-              ),
-            ),
-            const SizedBox(height: 50),
-            
-            // Loading Indicator
+            const SizedBox(height: 20),
+            // Text atau Loading
             const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+              color: Colors.white,
             ),
+            const SizedBox(height: 20),
+            const Text(
+              'Memuat aplikasi...',
+              style: TextStyle(color: Colors.white70, fontSize: 16),
+            )
           ],
         ),
       ),

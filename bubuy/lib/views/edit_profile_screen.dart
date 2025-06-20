@@ -21,10 +21,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         title: const Text(
           'Edit Profile',
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -42,7 +39,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                
+
                 // Profile Picture
                 Center(
                   child: CircleAvatar(
@@ -55,9 +52,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 30),
-                
+
                 // Form Fields
                 TextFormField(
                   controller: _nameController,
@@ -74,7 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                
+
                 TextFormField(
                   controller: _addressController,
                   decoration: const InputDecoration(
@@ -84,7 +81,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 TextFormField(
                   controller: _phoneController,
                   decoration: const InputDecoration(
@@ -94,7 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(
@@ -109,9 +106,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 30),
-                
+
                 // Submit Button
                 SizedBox(
                   width: double.infinity,
@@ -123,7 +120,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: const Text('Success'),
-                              content: const Text('Profile updated successfully!'),
+                              content: const Text(
+                                'Profile updated successfully!',
+                              ),
                               actions: [
                                 TextButton(
                                   onPressed: () {

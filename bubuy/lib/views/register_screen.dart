@@ -12,7 +12,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -40,14 +41,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 40),
-                  
+
                   // Logo Section dengan logo Bubuy dari direktori assets
                   Container(
                     margin: const EdgeInsets.only(bottom: 40),
                     child: Column(
                       children: [
                         // Logo Bubuy asli dari assets/bubuy.png
-                        Container(
+                        SizedBox(
                           width: 120,
                           height: 120,
                           child: Image.asset(
@@ -63,16 +64,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   borderRadius: BorderRadius.circular(20),
                                   color: Colors.white.withOpacity(0.1),
                                 ),
-                                child: Column(
+                                child: const Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.pets,
                                       size: 40,
                                       color: Colors.orange,
                                     ),
-                                    const SizedBox(height: 8),
-                                    const Text(
+                                    SizedBox(height: 8),
+                                    Text(
                                       'BUBUY\nLOVERS',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -81,7 +82,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const Text(
+                                    Text(
                                       'News',
                                       style: TextStyle(
                                         color: Colors.orange,
@@ -107,7 +108,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: _usernameController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.person, color: Colors.white70),
+                        prefixIcon:
+                            const Icon(Icons.person, color: Colors.white70),
                         hintText: 'USERNAME',
                         hintStyle: const TextStyle(color: Colors.white70),
                         filled: true,
@@ -145,7 +147,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       keyboardType: TextInputType.emailAddress,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.email, color: Colors.white70),
+                        prefixIcon:
+                            const Icon(Icons.email, color: Colors.white70),
                         hintText: 'GMAIL',
                         hintStyle: const TextStyle(color: Colors.white70),
                         filled: true,
@@ -167,7 +170,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Email tidak boleh kosong';
                         }
-                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value)) {
                           return 'Format email tidak valid';
                         }
                         return null;
@@ -183,10 +187,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       obscureText: !_isPasswordVisible,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                        prefixIcon:
+                            const Icon(Icons.lock, color: Colors.white70),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: Colors.white70,
                           ),
                           onPressed: () {
@@ -232,15 +239,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       obscureText: !_isConfirmPasswordVisible,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.lock_outline, color: Colors.white70),
+                        prefixIcon: const Icon(Icons.lock_outline,
+                            color: Colors.white70),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _isConfirmPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: Colors.white70,
                           ),
                           onPressed: () {
                             setState(() {
-                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                              _isConfirmPasswordVisible =
+                                  !_isConfirmPasswordVisible;
                             });
                           },
                         ),
@@ -286,14 +297,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text('Registrasi Berhasil'),
-                                content: const Text('Akun Anda telah berhasil dibuat!'),
+                                content: const Text(
+                                    'Akun Anda telah berhasil dibuat!'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       Navigator.pushReplacement(
                                         context,
-                                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LoginScreen()),
                                       );
                                     },
                                     child: const Text('OK'),

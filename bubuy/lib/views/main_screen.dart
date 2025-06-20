@@ -45,7 +45,7 @@ class MainScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 width: 120,
                 height: 120,
                 child: Image.asset(

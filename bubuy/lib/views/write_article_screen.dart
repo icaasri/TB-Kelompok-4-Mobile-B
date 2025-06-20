@@ -9,8 +9,8 @@ class WriteArticleScreen extends StatefulWidget {
 
 class _WriteArticleScreenState extends State<WriteArticleScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
   String _selectedCategory = 'Bird';
 
   final List<String> categories = ['Bird', 'Cat', 'Fish', 'Dog', 'Rabbit'];
@@ -20,7 +20,11 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Tulis Artikel'),
+        title: const Row(
+          children: [
+            Text('Hi, owl 👋'),
+          ],
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -43,20 +47,32 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
               children: [
                 const Text(
                   'Explore The Animals',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
                 ),
                 const SizedBox(height: 30),
 
+                // Add Article Title
                 const Text(
-                  'Tambah Artikel',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  'Add Artikel',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
                 const SizedBox(height: 30),
 
-                // JUDUL ARTIKEL
+                // Title Field
                 const Text(
                   'JUDUL ARTIKEL',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
@@ -65,21 +81,34 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                     prefixIcon: const Icon(Icons.edit, color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
                     ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF1565C0)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFF1565C0)),
                     ),
                   ),
-                  validator: (value) =>
-                      (value == null || value.isEmpty) ? 'Judul tidak boleh kosong' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Judul artikel tidak boleh kosong';
+                    }
+                    return null;
+                  },
                 ),
-
                 const SizedBox(height: 20),
 
-                // KATEGORI
+                // Category Field
                 const Text(
                   'KATEGORI',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
@@ -88,9 +117,15 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                     prefixIcon: const Icon(Icons.category, color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
                     ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF1565C0)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFF1565C0)),
                     ),
                   ),
                   items: categories.map((String category) {
@@ -105,17 +140,20 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                     });
                   },
                 ),
-
                 const SizedBox(height: 20),
 
-                // PILIH GAMBAR
+                // Image Field
                 const Text(
                   'GAMBAR',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  width: double.infinity,
                   height: 50,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
@@ -123,20 +161,22 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.image, color: Colors.grey),
-                      const SizedBox(width: 8),
-                      const Expanded(
-                        child: Text(
-                          'Pilih gambar...',
-                          style: TextStyle(color: Colors.grey),
-                        ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: Icon(Icons.image, color: Colors.grey),
                       ),
+                      const Text(
+                        'Pilih gambar...',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      const Spacer(),
                       TextButton(
                         onPressed: () {
+                          // Implementasi pilih gambar
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Fitur upload gambar belum tersedia'),
-                            ),
+                                content:
+                                    Text('Fitur pilih gambar belum tersedia')),
                           );
                         },
                         child: const Text('Browse'),
@@ -144,65 +184,78 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 20),
 
-                // ISI ARTIKEL
+                // Content Field
                 const Text(
                   'ISI ARTIKEL',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _contentController,
                   maxLines: 8,
                   decoration: InputDecoration(
-                    hintText: 'Tulis isi artikel di sini...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
                     ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF1565C0)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
                     ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFF1565C0)),
+                    ),
+                    hintText: 'Tulis isi artikel di sini...',
                   ),
-                  validator: (value) =>
-                      (value == null || value.isEmpty) ? 'Isi artikel tidak boleh kosong' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Isi artikel tidak boleh kosong';
+                    }
+                    return null;
+                  },
                 ),
-
                 const SizedBox(height: 30),
 
-                // TOMBOL
+                // Buttons
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Simulasi menyimpan artikel
+                            // Simulasi simpan artikel
                             showDialog(
                               context: context,
-                              builder: (_) => AlertDialog(
-                                title: const Text('Sukses'),
-                                content: const Text('Artikel berhasil disimpan!'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      _titleController.clear();
-                                      _contentController.clear();
-                                      setState(() {
-                                        _selectedCategory = 'Bird';
-                                      });
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ),
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Berhasil'),
+                                  content:
+                                      const Text('Artikel berhasil disimpan!'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        _titleController.clear();
+                                        _contentController.clear();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1565C0),
+                          backgroundColor: Colors.grey[600],
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -222,11 +275,11 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                           });
                         },
                         style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.grey[600],
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          side: const BorderSide(color: Colors.grey),
                         ),
                         child: const Text('BATAL'),
                       ),
