@@ -4,9 +4,9 @@ import 'package:image_picker/image_picker.dart'; // Import image_picker
 import 'package:provider/provider.dart'; // Import provider
 import 'dart:io'; // Untuk File
 
-import '../models/article.dart';
-import '../services/article_service.dart'; // Import ArticleService
-import '../services/auth_service.dart'; // Import AuthService untuk nama penulis
+import 'package:bubuy_lovers/models/article.dart'; // Perbaiki import
+import 'package:bubuy_lovers/services/article_service.dart'; // Perbaiki import
+import 'package:bubuy_lovers/services/auth_service.dart'; // Perbaiki import untuk nama penulis
 
 class WriteArticleScreen extends StatefulWidget {
   const WriteArticleScreen({super.key});
@@ -50,7 +50,6 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Consumer untuk AuthService agar bisa mendapatkan nama penulis
     return Consumer<AuthService>(
       builder: (context, authService, child) {
         final currentUsername = authService.currentUser?.username ?? 'Guest';
@@ -60,7 +59,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
           appBar: AppBar(
             title: Row(
               children: [
-                Text('Hi, $currentUsername 👋'), // Tampilkan username dinamis
+                Text('Add Article, $currentUsername'), // Ubah teks AppBar
               ],
             ),
             backgroundColor: Colors.white,
@@ -92,7 +91,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                     ),
                     const SizedBox(height: 30),
                     const Text(
-                      'Add Artikel',
+                      'ADD ARTICLE', // Ubah teks
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -180,12 +179,10 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                     ),
                     const SizedBox(height: 8),
                     GestureDetector(
-                      // Menggunakan GestureDetector agar seluruh area bisa diklik
                       onTap: _pickImage,
                       child: Container(
                         width: double.infinity,
-                        height:
-                            150, // Tinggi yang lebih besar untuk preview gambar
+                        height: 150,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(8),
@@ -251,7 +248,6 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                             onPressed: _isLoading
                                 ? null
                                 : () async {
-                                    // Menonaktifkan tombol saat loading
                                     if (_formKey.currentState!.validate()) {
                                       if (_imageFile == null) {
                                         ScaffoldMessenger.of(context)
@@ -264,15 +260,13 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                                       }
 
                                       setState(() {
-                                        _isLoading = true; // Set loading true
+                                        _isLoading = true;
                                       });
 
-                                      // Simulasi ID unik untuk artikel baru
                                       final newArticleId = DateTime.now()
                                           .millisecondsSinceEpoch
                                           .toString();
 
-                                      // Simulasi URL gambar (dalam aplikasi nyata, ini akan diupload ke server)
                                       final imageUrl =
                                           'https://via.placeholder.com/150x150?text=Article+${newArticleId}';
 
@@ -280,21 +274,18 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                                         id: newArticleId,
                                         title: _titleController.text,
                                         category: _selectedCategory,
-                                        imageUrl:
-                                            imageUrl, // Menggunakan URL gambar simulasi
+                                        imageUrl: imageUrl,
                                         content: _contentController.text,
-                                        author:
-                                            currentUsername, // Menggunakan username yang login sebagai penulis
+                                        author: currentUsername,
                                         createdAt: DateTime.now(),
                                       );
 
-                                      // Panggil ArticleService untuk menambahkan artikel
                                       await Provider.of<ArticleService>(context,
                                               listen: false)
                                           .addArticle(newArticle);
 
                                       setState(() {
-                                        _isLoading = false; // Set loading false
+                                        _isLoading = false;
                                       });
 
                                       showDialog(
@@ -308,7 +299,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                                               TextButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
-                                                  _resetForm(); // Reset form setelah submit sukses
+                                                  _resetForm();
                                                 },
                                                 child: const Text('OK'),
                                               ),
@@ -319,8 +310,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                                     }
                                   },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(
-                                  0xFF1565C0), // Ubah warna agar seragam
+                              backgroundColor: const Color(0xFF1565C0),
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(
@@ -328,8 +318,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                             ),
                             child: _isLoading
                                 ? const CircularProgressIndicator(
-                                    color: Colors
-                                        .white) // Indikator loading di tombol
+                                    color: Colors.white)
                                 : const Text('SIMPAN'),
                           ),
                         ),

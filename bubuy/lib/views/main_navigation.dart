@@ -1,11 +1,11 @@
 // views/main_navigation.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
-import 'home_screen.dart';
-import 'favorites_screen.dart';
-import 'profile_screen.dart';
-import 'package:bubuy_lovers/views/edit_profile_screen.dart'; // Tambahkan ini
-import '../services/auth_service.dart'; // Import AuthService
+import 'package:bubuy_lovers/views/home_screen.dart'; // Perbaiki import
+import 'package:bubuy_lovers/views/favorites_screen.dart'; // Perbaiki import
+import 'package:bubuy_lovers/views/profile_screen.dart'; // Perbaiki import
+import 'package:bubuy_lovers/views/edit_profile_screen.dart'; // Perbaiki import
+import 'package:bubuy_lovers/services/auth_service.dart'; // Perbaiki import
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -18,7 +18,7 @@ class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
 
   final List<Widget> _widgetOptions = <Widget>[
-    const HomeScreen(),
+    const HomeScreen(), // Ini sekarang adalah halaman utama Anda
     const FavoritesScreen(),
     const ProfileScreen(),
   ];
@@ -31,15 +31,12 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    // Consumer<AuthService> di sini akan menyebabkan MainNavigation rebuilt saat authService berubah,
-    // yang penting saat logout.
     return Consumer<AuthService>(
       builder: (context, authService, child) {
         return Scaffold(
           appBar: _selectedIndex == 0
-              ? null
+              ? null // Tidak ada AppBar di HomeScreen karena sudah punya header kustom
               : AppBar(
-                  // AppBar dinamis
                   title: Text(
                     _selectedIndex == 1 ? 'Favorites' : 'Profile',
                     style: const TextStyle(
@@ -62,19 +59,19 @@ class _MainNavigationState extends State<MainNavigation> {
                         },
                         icon: const Icon(Icons.edit, color: Colors.black87),
                       ),
-                    if (_selectedIndex ==
-                        0) // Tombol Logout di AppBar Home (opsional, sudah ada di profile)
-                      IconButton(
-                        onPressed: () async {
-                          await authService
-                              .logout(); // Panggil logout dari AuthService
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, '/login', (route) => false);
-                        },
-                        icon:
-                            const Icon(Icons.logout, color: Color(0xFF1565C0)),
-                        tooltip: 'Logout',
-                      ),
+                    // Tombol logout di AppBar Main Navigation, hanya muncul jika di tab Home
+                    // (sesuai contoh sebelumnya, meskipun di profile juga ada)
+                    // if (_selectedIndex == 0) // ini bisa dihapus jika logout sudah ada di ProfileScreen
+                    //   IconButton(
+                    //     onPressed: () async {
+                    //       await authService.logout();
+                    //       Navigator.pushNamedAndRemoveUntil(
+                    //           context, '/login', (route) => false);
+                    //     },
+                    //     icon:
+                    //         const Icon(Icons.logout, color: Color(0xFF1565C0)),
+                    //     tooltip: 'Logout',
+                    //   ),
                   ],
                 ),
           body: Center(
@@ -98,8 +95,7 @@ class _MainNavigationState extends State<MainNavigation> {
             ],
             currentIndex: _selectedIndex,
             selectedItemColor: const Color(0xFF1565C0),
-            unselectedItemColor:
-                Colors.grey[600], // Menambah warna untuk yang tidak dipilih
+            unselectedItemColor: Colors.grey[600],
             onTap: _onItemTapped,
           ),
           floatingActionButton:
