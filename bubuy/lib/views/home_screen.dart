@@ -1,6 +1,9 @@
+// lib/views/home_screen.dart
 import 'package:flutter/material.dart';
-import '../models/article.dart';
-import 'article_detail_screen.dart';
+import 'package:bubuy_lovers/models/article.dart'; // Perbaiki import
+import 'package:bubuy_lovers/views/article_detail_screen.dart'; // Perbaiki import
+import 'package:bubuy_lovers/services/article_service.dart'; // Import ArticleService
+import 'package:provider/provider.dart'; // Import Provider
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,46 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
     'Rabbit',
   ];
 
-  final List<Article> articles = [
-    Article(
-      id: '1',
-      title: 'Sejarah burung pipit',
-      category: 'Bird',
-      imageUrl:
-          'https://via.placeholder.com/150x100?text=Bird+Image', // Example placeholder URL
-      content:
-          'Burung pipit adalah salah satu burung kecil yang paling umum ditemukan di seluruh dunia. Mereka memiliki kemampuan adaptasi yang luar biasa.',
-      author: 'Admin',
-      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
-    ),
-    Article(
-      id: '2',
-      title: 'Cara merawat kucing',
-      category: 'Cat',
-      imageUrl:
-          'https://via.placeholder.com/150x100?text=Cat+Image', // Example placeholder URL
-      content:
-          'Kucing adalah hewan peliharaan yang membutuhkan perawatan khusus. Mereka memerlukan makanan berkualitas dan lingkungan yang bersih.',
-      author: 'Dr. Hewan',
-      createdAt: DateTime.now().subtract(const Duration(hours: 5)),
-    ),
-    Article(
-      id: '3',
-      title: 'Ikan hias air tawar',
-      category: 'Fish',
-      imageUrl:
-          'https://via.placeholder.com/150x100?text=Fish+Image', // Example placeholder URL
-      content:
-          'Ikan hias air tawar menjadi pilihan populer untuk aquarium rumah karena perawatannya yang relatif mudah.',
-      author: 'Aquarist',
-      createdAt: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-  ];
+  // Articles sekarang akan diambil dari ArticleService
+  // final List<Article> articles = [...]; // Hapus ini
 
   List<Article> get filteredArticles {
+    final articleService =
+        Provider.of<ArticleService>(context); // Ambil ArticleService
     List<Article> filtered = selectedCategory == 'All'
-        ? articles
-        : articles
+        ? articleService.articles // Ambil dari service
+        : articleService.articles
             .where((article) => article.category == selectedCategory)
             .toList();
 
@@ -78,7 +50,6 @@ class _HomeScreenState extends State<HomeScreen> {
           )
           .toList();
     }
-
     return filtered;
   }
 
@@ -109,7 +80,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF1E88E5), Color(0xFF1565C0)],
+                  colors: [
+                    Color(0xFF003366),
+                    Color(0xFF0066CC)
+                  ], // Gradien biru gelap
                 ),
               ),
               child: Column(
@@ -119,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     children: [
                       const Text(
-                        'Hi, kaka 👋',
+                        'Hi, kaka 👋', // Anda bisa mendapatkan nama pengguna dari AuthService
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -209,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFF1565C0)
+                                  ? const Color(0xFF1565C0) // Warna biru
                                   : Colors.grey[200],
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -237,133 +211,148 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Articles List
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: filteredArticles.length,
-                itemBuilder: (context, index) {
-                  final article = filteredArticles[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ArticleDetailScreen(article: article),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          // Article Image
-                          ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(12),
-                              bottomLeft: Radius.circular(12),
-                            ),
-                            child: Container(
-                              width: 100,
-                              height: 100,
-                              color: Colors.grey[300],
-                              child: article.imageUrl.isNotEmpty
-                                  ? Image.network(
-                                      article.imageUrl,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              const Icon(
-                                        Icons.image,
-                                        color: Colors.grey,
-                                      ),
-                                    )
-                                  : const Icon(
-                                      Icons.image,
-                                      color: Colors.grey,
-                                    ),
-                            ),
-                          ),
+              // Consumer untuk ArticleService agar daftar artikel diupdate otomatis
+              child: Consumer<ArticleService>(
+                builder: (context, articleService, child) {
+                  final articlesToShow =
+                      filteredArticles; // Gunakan filteredArticles
 
-                          // Article Content
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    article.title,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    article.content,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Row(
+                  if (articlesToShow.isEmpty) {
+                    return const Center(
+                      child: Text('Tidak ada artikel ditemukan.'),
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: articlesToShow.length,
+                    itemBuilder: (context, index) {
+                      final article = articlesToShow[index];
+                      return GestureDetector(
+                        onTap: () {
+                          // Navigasi dengan named route dan passing arguments
+                          Navigator.pushNamed(
+                            context,
+                            '/articleDetail',
+                            arguments: article,
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              // Article Image
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  bottomLeft: Radius.circular(12),
+                                ),
+                                child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  color: Colors.grey[300],
+                                  child: article.imageUrl.isNotEmpty
+                                      ? Image.network(
+                                          article.imageUrl,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  const Icon(
+                                            Icons.image,
+                                            color: Colors.grey,
+                                            size: 50,
+                                          ),
+                                        )
+                                      : const Icon(
+                                          Icons.image,
+                                          color: Colors.grey,
+                                          size: 50,
+                                        ),
+                                ),
+                              ),
+
+                              // Article Content
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: const Color(
-                                            0xFF1565C0,
-                                          ).withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          article.category,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            color: Color(0xFF1565C0),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      const Spacer(),
                                       Text(
-                                        _formatTimeAgo(article.createdAt),
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.grey[500],
+                                        article.title,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
                                         ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        article.content,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(
+                                                      0xFF1565C0) // Warna biru
+                                                  .withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Text(
+                                              article.category,
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                color: Color(0xFF1565C0),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          Text(
+                                            _formatTimeAgo(article.createdAt),
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.grey[500],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
