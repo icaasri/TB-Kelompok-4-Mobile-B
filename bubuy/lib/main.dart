@@ -2,24 +2,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'views/splash_screen.dart';
-import 'package:bubuy_lovers/views/article_detail_screen.dart'; // Tambahkan ini
-import 'package:bubuy_lovers/models/article.dart'; // Tambahkan ini
-import 'views/login_screen.dart';
-import 'views/register_screen.dart';
-import 'views/main_navigation.dart';
-import 'views/write_article_screen.dart';
-import 'services/auth_service.dart';
-import 'services/article_service.dart'; // Import ArticleService
+// Pastikan semua import menggunakan 'package:bubuy_lovers/'
+import 'package:bubuy_lovers/views/splash_screen.dart';
+import 'package:bubuy_lovers/views/login_screen.dart';
+import 'package:bubuy_lovers/views/register_screen.dart';
+import 'package:bubuy_lovers/views/main_navigation.dart';
+import 'package:bubuy_lovers/views/write_article_screen.dart'; // Perbaiki nama file jika masih write_article_detail.dart
+import 'package:bubuy_lovers/views/article_detail_screen.dart'; // Untuk onGenerateRoute
+import 'package:bubuy_lovers/models/article.dart'; // Untuk onGenerateRoute
+
+import 'package:bubuy_lovers/services/auth_service.dart';
+import 'package:bubuy_lovers/services/article_service.dart';
 
 void main() {
   runApp(
-    // Menggunakan MultiProvider untuk menyediakan beberapa ChangeNotifier
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthService()),
-        ChangeNotifierProvider(
-            create: (context) => ArticleService()), // Sediakan ArticleService
+        ChangeNotifierProvider(create: (context) => ArticleService()),
       ],
       child: const MyApp(),
     ),
@@ -37,28 +37,49 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // Muat data pengguna saat aplikasi dimulai
-    // Panggil loadCurrentUser di sini, agar sesi login sebelumnya bisa dimuat
-    Provider.of<AuthService>(context, listen: false).loadCurrentUser();
+    // Memuat status pengguna saat aplikasi dimulai
+    // Penting: Pastikan loadCurrentUser tidak memicu pushReplacement langsung
+    // karena kita menangani navigasi awal di initialRoute.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AuthService>(context, listen: false).loadCurrentUser();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Consumer untuk memastikan SplashScreen tetap di awal jika belum login
     return Consumer<AuthService>(
       builder: (context, authService, child) {
+        // isLoading biasanya datang dari AuthService jika ada proses loading.
+        // Jika belum ada logika loading, kita bisa asumsikan selalu siap.
+        // Untuk demo ini, kita langsung tentukan initialRoute berdasarkan currentUser.
+        final initialRoute = authService.currentUser != null ? '/main' : '/';
+
         return MaterialApp(
           title: 'Bubuy Lovers',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.blue,
             fontFamily: 'Roboto',
+            // Define input decoration theme globally if needed
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.white.withOpacity(0.1),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: Colors.white30),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: Colors.white),
+              ),
+              hintStyle: const TextStyle(color: Colors.white70),
+            ),
           ),
-          // Penggunaan Navigator 2.0 atau GoRouter akan lebih ideal untuk routing kompleks
-          // Tapi untuk demo ini, kita tetap pakai named routes dasar
-          initialRoute: authService.currentUser != null
-              ? '/main'
-              : '/', // Cek status login
+          initialRoute: initialRoute,
           routes: {
             '/': (context) => const SplashScreen(),
             '/login': (context) => const LoginScreen(),
@@ -67,8 +88,8 @@ class _MyAppState extends State<MyApp> {
                 ? const MainNavigation()
                 : const LoginScreen(), // Lindungi rute utama
             '/writeArticle': (context) => const WriteArticleScreen(),
+            // Tidak perlu '/home', '/favorites', '/profile' karena itu diatur di MainNavigation
           },
-          // OnGenerateRoute bisa digunakan untuk meneruskan argumen ke ArticleDetailScreen
           onGenerateRoute: (settings) {
             if (settings.name == '/articleDetail') {
               final args = settings.arguments as Article;
@@ -76,8 +97,7 @@ class _MyAppState extends State<MyApp> {
                 builder: (context) => ArticleDetailScreen(article: args),
               );
             }
-            // Tangani rute lain atau kembalikan null untuk default
-            return null;
+            return null; // Biarkan rute lain ditangani oleh `routes` map
           },
         );
       },
