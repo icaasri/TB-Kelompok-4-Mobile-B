@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     margin: const EdgeInsets.only(
                         bottom: 30), // Kurangi margin jika perlu
                     child: Image.asset(
-                      'assets/bubuy.png', // Pastikan path ini benar jika bubuy.png langsung di assets
+                      'assets/images/bubuy.png', // Pastikan path ini benar jika bubuy.png langsung di assets
                       // atau 'assets/images/bubuy.png' jika di subfolder images
                       width: 150, // Sesuaikan ukuran
                       height: 150,

@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,9 +6,9 @@ import 'package:bubuy_lovers/views/splash_screen.dart';
 import 'package:bubuy_lovers/views/login_screen.dart';
 import 'package:bubuy_lovers/views/register_screen.dart';
 import 'package:bubuy_lovers/views/main_navigation.dart';
-import 'package:bubuy_lovers/views/write_article_screen.dart'; // Perbaiki nama file jika masih write_article_detail.dart
-import 'package:bubuy_lovers/views/article_detail_screen.dart'; // Untuk onGenerateRoute
-import 'package:bubuy_lovers/models/article.dart'; // Untuk onGenerateRoute
+import 'package:bubuy_lovers/views/write_article_screen.dart';
+import 'package:bubuy_lovers/views/article_detail_screen.dart';
+import 'package:bubuy_lovers/models/article.dart';
 
 import 'package:bubuy_lovers/services/auth_service.dart';
 import 'package:bubuy_lovers/services/article_service.dart';
@@ -37,9 +36,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // Memuat status pengguna saat aplikasi dimulai
-    // Penting: Pastikan loadCurrentUser tidak memicu pushReplacement langsung
-    // karena kita menangani navigasi awal di initialRoute.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AuthService>(context, listen: false).loadCurrentUser();
     });

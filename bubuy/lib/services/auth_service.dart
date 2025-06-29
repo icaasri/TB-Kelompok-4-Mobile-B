@@ -2,13 +2,16 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http; // Import package http
+// import 'package:http/http.dart' as http; // HAPUS INI
 
-import 'package:bubuy_lovers/models/user.dart'; // Sesuaikan import
+import 'package:bubuy_lovers/models/user.dart';
 
 class AuthService extends ChangeNotifier {
   User? _currentUser;
-  final String _baseUrl = 'http://45.149.187.204:3000/swagger/api/bubuy-lovers';
+  // final String _baseUrl = 'http://45.149.187.204:3000'; // HAPUS INI
+
+  // Data pengguna yang diregistrasi secara lokal (untuk simulasi)
+  final Map<String, User> _registeredUsers = {};
 
   User? get currentUser => _currentUser;
 
@@ -17,87 +20,92 @@ class AuthService extends ChangeNotifier {
     final userJson = prefs.getString('currentUser');
     if (userJson != null) {
       _currentUser = User.fromJson(jsonDecode(userJson));
+      // Untuk simulasi, tambahkan juga ke _registeredUsers jika belum ada
+      if (_currentUser != null &&
+          !_registeredUsers.containsKey(_currentUser!.username)) {
+        _registeredUsers[_currentUser!.username] = _currentUser!;
+      }
       notifyListeners();
+      debugPrint(
+          'User loaded from SharedPreferences: ${_currentUser!.username}');
     }
   }
 
+  // Metode Register (Simulasi)
   Future<bool> register(String username, String email, String password) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$_baseUrl/register'), // Endpoint registrasi
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'username': username,
-          'email': email,
-          'password': password,
-        }),
-      );
+    await Future.delayed(const Duration(seconds: 1)); // Simulasi delay
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Asumsi API mengembalikan data pengguna setelah registrasi
-        final responseData = jsonDecode(response.body);
-        _currentUser = User.fromJson(
-            responseData['user']); // Sesuaikan jika struktur API berbeda
-        await _saveCurrentUser(_currentUser!);
-        notifyListeners();
-        return true;
-      } else {
-        debugPrint('Registrasi gagal: ${response.body}');
-        return false;
-      }
-    } catch (e) {
-      debugPrint('Error registrasi: $e');
+    // Simulasi validasi sederhana
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      debugPrint('Registrasi gagal: Data tidak boleh kosong.');
       return false;
     }
+    if (password.length < 6) {
+      debugPrint('Registrasi gagal: Password minimal 6 karakter.');
+      return false;
+    }
+    if (_registeredUsers.containsKey(username)) {
+      debugPrint('Registrasi gagal: Username sudah terdaftar.');
+      return false; // Username sudah terdaftar
+    }
+    if (_registeredUsers.values.any((user) => user.email == email)) {
+      debugPrint('Registrasi gagal: Email sudah terdaftar.');
+      return false; // Email sudah terdaftar
+    }
+
+    // Jika semua validasi lokal lolos, simpan pengguna
+    final newUser = User(username: username, email: email);
+    _registeredUsers[username] = newUser;
+    _currentUser = newUser; // Anggap langsung login setelah register
+    await _saveCurrentUser(_currentUser!);
+    notifyListeners();
+    debugPrint('Registrasi berhasil (simulasi): $username');
+    return true;
   }
 
+  // Metode Login (Simulasi)
   Future<bool> login(String username, String password) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$_baseUrl/login'), // Endpoint login
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'username': username,
-          'password': password,
-        }),
-      );
+    await Future.delayed(const Duration(seconds: 1)); // Simulasi delay
 
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        // Asumsi API mengembalikan { "token": "...", "user": { ... } }
-        _currentUser = User.fromJson(
-            responseData['user']); // Sesuaikan jika struktur API berbeda
-        // Simpan token untuk otentikasi di request selanjutnya jika API menggunakan token
-        // await prefs.setString('authToken', responseData['token']);
-        await _saveCurrentUser(_currentUser!);
-        notifyListeners();
-        return true;
-      } else {
-        debugPrint('Login gagal: ${response.body}');
-        return false;
-      }
-    } catch (e) {
-      debugPrint('Error login: $e');
-      return false;
+    // Logika login simulasi
+    if (_registeredUsers.containsKey(username)) {
+      // Untuk demo, kita abaikan password, atau bisa tambahkan password hardcoded
+      // Realistisnya: Anda akan membandingkan password dengan hash yang disimpan
+      // if (username == "test" && password == "password123") {
+      //   _currentUser = User(username: username, email: "test@example.com");
+      // } else {
+      //   return false;
+      // }
+      _currentUser =
+          _registeredUsers[username]; // Ambil user dari daftar yang diregister
+      await _saveCurrentUser(_currentUser!);
+      notifyListeners();
+      debugPrint('Login berhasil (simulasi): $username');
+      return true;
+    } else if (username == "kaka" && password == "password123") {
+      // Contoh akun hardcoded untuk demo
+      _currentUser = User(username: "kaka", email: "kaka@gmail.com");
+      await _saveCurrentUser(_currentUser!);
+      notifyListeners();
+      debugPrint('Login berhasil (hardcoded): kaka');
+      return true;
     }
+    debugPrint(
+        'Login gagal (simulasi): Username tidak ditemukan atau password salah.');
+    return false; // Username tidak ditemukan
   }
 
   Future<void> logout() async {
     _currentUser = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('currentUser');
-    // Jika ada token, hapus juga
-    // await prefs.remove('authToken');
     notifyListeners();
+    debugPrint('User logged out (simulasi)');
   }
 
   Future<void> _saveCurrentUser(User user) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('currentUser', jsonEncode(user.toJson()));
+    debugPrint('User saved to SharedPreferences (simulasi): ${user.username}');
   }
-
-  // Future<String?> _getAuthToken() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString('authToken');
-  // }
 }

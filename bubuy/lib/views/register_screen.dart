@@ -50,7 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 30),
                     child: Image.asset(
-                      'assets/bubuy.png', // Pastikan path ini benar jika bubuy.png langsung di assets
+                      'assets/images/bubuy.png', // Pastikan path ini benar jika bubuy.png langsung di assets
                       // atau 'assets/images/bubuy.png' jika di subfolder images
                       width: 150,
                       height: 150,
