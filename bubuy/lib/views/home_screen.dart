@@ -1,9 +1,11 @@
 // lib/views/home_screen.dart
+
 import 'package:flutter/material.dart';
-import 'package:bubuy_lovers/models/article.dart'; // Perbaiki import
-import 'package:bubuy_lovers/views/article_detail_screen.dart'; // Perbaiki import
-import 'package:bubuy_lovers/services/article_service.dart'; // Import ArticleService
-import 'package:provider/provider.dart'; // Import Provider
+import 'package:bubuy_lovers/models/article.dart';
+import 'package:bubuy_lovers/views/article_detail_screen.dart';
+import 'package:bubuy_lovers/services/article_service.dart';
+import 'package:provider/provider.dart'; // Import provider
+import 'package:bubuy_lovers/services/auth_service.dart'; // Import AuthService
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,14 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
     'Rabbit',
   ];
 
-  // Articles sekarang akan diambil dari ArticleService
-  // final List<Article> articles = [...]; // Hapus ini
-
   List<Article> get filteredArticles {
-    final articleService =
-        Provider.of<ArticleService>(context); // Ambil ArticleService
+    final articleService = Provider.of<ArticleService>(context);
     List<Article> filtered = selectedCategory == 'All'
-        ? articleService.articles // Ambil dari service
+        ? articleService.articles
         : articleService.articles
             .where((article) => article.category == selectedCategory)
             .toList();
@@ -80,33 +78,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF003366),
-                    Color(0xFF0066CC)
-                  ], // Gradien biru gelap
+                  colors: [Color(0xFF003366), Color(0xFF0066CC)],
                 ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Greeting
-                  Row(
-                    children: [
-                      const Text(
-                        'Hi, kaka 👋', // Anda bisa mendapatkan nama pengguna dari AuthService
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Spacer(),
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.white.withOpacity(0.2),
-                        child: const Icon(Icons.person, color: Colors.white),
-                      ),
-                    ],
+                  // Greeting Section - DIBUNGKUS DENGAN CONSUMER
+                  Consumer<AuthService>(
+                    // Menggunakan Consumer untuk AuthService
+                    builder: (context, authService, child) {
+                      // Ambil username dari currentUser
+                      final String displayedUsername =
+                          authService.currentUser?.username ??
+                              'Pengguna'; // Default 'Pengguna' jika null
+                      return Row(
+                        children: [
+                          Text(
+                            'Hi, $displayedUsername 👋', // Tampilkan username dinamis
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const Spacer(),
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.white.withOpacity(0.2),
+                            child:
+                                const Icon(Icons.person, color: Colors.white),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 8),
                   const Text(
@@ -146,7 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Popular Animals Section
+            // ... (Sisa kode HomeScreen Anda seperti Popular Animals Section dan Articles List)
+            // Pastikan Anda tidak menghapus bagian lain dari HomeScreen.
+            // ... (Bagian Popular Animals Section)
             Container(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -161,8 +168,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  // Category Tabs
                   SizedBox(
                     height: 40,
                     child: ListView.builder(
@@ -171,7 +176,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         final category = categories[index];
                         final isSelected = selectedCategory == category;
-
                         return GestureDetector(
                           onTap: () =>
                               setState(() => selectedCategory = category),
@@ -183,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFF1565C0) // Warna biru
+                                  ? const Color(0xFF1565C0)
                                   : Colors.grey[200],
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -211,18 +215,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Articles List
             Expanded(
-              // Consumer untuk ArticleService agar daftar artikel diupdate otomatis
               child: Consumer<ArticleService>(
                 builder: (context, articleService, child) {
-                  final articlesToShow =
-                      filteredArticles; // Gunakan filteredArticles
-
+                  final articlesToShow = filteredArticles;
                   if (articlesToShow.isEmpty) {
                     return const Center(
                       child: Text('Tidak ada artikel ditemukan.'),
                     );
                   }
-
                   return ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: articlesToShow.length,
@@ -230,7 +230,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       final article = articlesToShow[index];
                       return GestureDetector(
                         onTap: () {
-                          // Navigasi dengan named route dan passing arguments
                           Navigator.pushNamed(
                             context,
                             '/articleDetail',
@@ -252,7 +251,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: Row(
                             children: [
-                              // Article Image
                               ClipRRect(
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(12),
@@ -281,8 +279,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                 ),
                               ),
-
-                              // Article Content
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
@@ -319,8 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               vertical: 2,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: const Color(
-                                                      0xFF1565C0) // Warna biru
+                                              color: const Color(0xFF1565C0)
                                                   .withOpacity(0.1),
                                               borderRadius:
                                                   BorderRadius.circular(10),

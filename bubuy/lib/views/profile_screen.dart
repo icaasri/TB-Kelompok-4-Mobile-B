@@ -1,276 +1,219 @@
-// lib/views/profile_screen.dart
 import 'package:flutter/material.dart';
-import 'package:bubuy_lovers/views/edit_profile_screen.dart'; // Perbaiki import
-import 'package:bubuy_lovers/views/login_screen.dart'; // Untuk navigasi logout
+import 'package:provider/provider.dart'; // Import provider
 import 'package:bubuy_lovers/services/auth_service.dart'; // Import AuthService
-import 'package:provider/provider.dart'; // Import Provider
+import 'package:bubuy_lovers/models/user.dart'; // Import User model
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
+
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  final _formKey = GlobalKey<FormState>();
+  // Deklarasikan TextEditingController
+  late TextEditingController _nameController;
+  late TextEditingController _addressController;
+  late TextEditingController _phoneController;
+  late TextEditingController _emailController;
+
+  User? _initialUser; // Untuk menyimpan data user awal
+
+  @override
+  void initState() {
+    super.initState();
+    // Menggunakan addPostFrameCallback untuk mendapatkan context setelah widget dibangun
+    // Ini penting karena Provider.of(context) tidak bisa dipanggil langsung di initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      _initialUser = authService.currentUser; // Simpan user awal
+
+      // Inisialisasi controller dengan data user yang sedang login
+      _nameController =
+          TextEditingController(text: _initialUser?.username ?? '');
+      _addressController =
+          TextEditingController(text: _initialUser?.address ?? '');
+      _phoneController = TextEditingController(text: _initialUser?.phone ?? '');
+      _emailController = TextEditingController(text: _initialUser?.email ?? '');
+
+      // Memanggil setState agar UI terupdate dengan nilai awal dari controller
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Consumer untuk mendapatkan data pengguna dan memicu rebuild saat logout
-    return Consumer<AuthService>(
-      builder: (context, authService, child) {
-        final user = authService.currentUser;
-        final username = user?.username ?? 'Guest';
-        final email = user?.email ?? 'N/A';
-
-        return Scaffold(
-          backgroundColor: Colors.grey[50],
-          // AppBar sudah ditangani di MainNavigation
-          body: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: const Text(
+          'Edit Profile',
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 const SizedBox(height: 20),
 
-                // Profile Picture
+                // Profile Picture (gunakan yang sudah ada)
                 Center(
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.purple[200],
-                        child: const Icon(
-                          Icons.person,
-                          size: 60,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF1565C0),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.purple[200],
+                    child: const Icon(
+                      Icons.person,
+                      size: 60,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
 
                 const SizedBox(height: 30),
 
-                // Profile Information
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                // Form Fields
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                    prefixIcon: Icon(Icons.person),
+                    border: OutlineInputBorder(),
                   ),
-                  child: Column(
-                    children: [
-                      _buildProfileItem(
-                        icon: Icons.person,
-                        title: 'Name',
-                        value: username, // Tampilkan username dari AuthService
-                      ),
-                      const Divider(height: 1),
-                      _buildProfileItem(
-                        icon: Icons.email, // Ubah icon jika perlu
-                        title: 'E-Mail',
-                        value: email, // Tampilkan email dari AuthService
-                      ),
-                      const Divider(height: 1),
-                      // Contoh item lain, jika ada di User model:
-                      _buildProfileItem(
-                        icon: Icons.phone,
-                        title: 'Phone no.',
-                        value: 'N/A', // Ganti dengan data asli jika ada
-                      ),
-                      const Divider(height: 1),
-                      _buildProfileItem(
-                        icon: Icons.business,
-                        title: 'Department',
-                        value: 'Mahasiswa', // Ganti dengan data asli jika ada
-                      ),
-                    ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Name cannot be empty';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: _addressController,
+                  decoration: const InputDecoration(
+                    labelText: 'Address',
+                    prefixIcon: Icon(Icons.location_on),
+                    border: OutlineInputBorder(),
                   ),
+                ),
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone',
+                    prefixIcon: Icon(Icons.phone),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email cannot be empty';
+                    }
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        .hasMatch(value)) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 30),
 
-                // Action Buttons
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      _buildActionButton(
-                        icon: Icons.settings,
-                        title: 'Settings',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Settings coming soon')),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      _buildActionButton(
-                        icon: Icons.help_outline,
-                        title: 'Help & Support',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Help & Support coming soon')),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      _buildActionButton(
-                        icon: Icons.logout,
-                        title: 'Logout',
-                        onTap: () {
+                // Submit Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        final authService =
+                            Provider.of<AuthService>(context, listen: false);
+                        bool success = await authService.updateUser(
+                          username:
+                              _nameController.text, // Ini akan update username
+                          email: _emailController.text,
+                          address: _addressController.text,
+                          phone: _phoneController.text,
+                          // Department mungkin tidak perlu jika tidak ada input terpisah
+                          // department: _departmentController.text,
+                        );
+
+                        if (success) {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: const Text('Logout'),
-                                content: const Text(
-                                    'Are you sure you want to logout?'),
+                                title: const Text('Success'),
+                                content:
+                                    const Text('Profile updated successfully!'),
                                 actions: [
                                   TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
+                                    onPressed: () {
                                       Navigator.of(context)
                                           .pop(); // Tutup dialog
-                                      await authService
-                                          .logout(); // Panggil logout dari AuthService
-                                      // Setelah logout, navigasi ke LoginScreen dan hapus semua route sebelumnya
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LoginScreen()),
-                                        (route) => false,
-                                      );
+                                      Navigator.pop(
+                                          context); // Kembali ke ProfileScreen
                                     },
-                                    child: const Text('Logout'),
+                                    child: const Text('OK'),
                                   ),
                                 ],
                               );
                             },
                           );
-                        },
-                        isDestructive: true,
-                      ),
-                    ],
+                        } else {
+                          // Handle error jika update gagal (misal dari API)
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Failed to update profile.')),
+                          );
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1565C0),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text('Submit'),
                   ),
                 ),
-
-                const SizedBox(height: 30),
               ],
             ),
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildProfileItem({
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.grey[600], size: 20),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildActionButton({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-    bool isDestructive = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isDestructive ? Colors.red : Colors.grey[600],
-              size: 20,
-            ),
-            const SizedBox(width: 16),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                color: isDestructive ? Colors.red : Colors.black87,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Spacer(),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.grey[400],
-              size: 16,
-            ),
-          ],
-        ),
-      ),
-    );
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    super.dispose();
   }
 }
